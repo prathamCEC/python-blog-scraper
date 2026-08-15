@@ -5,33 +5,41 @@ from urllib.parse import urljoin
 
 URL = "https://blog.python.org/"
 
+HEADERS = {
+    "User-Agent": "curl/8.5.0"
+}
+
 
 def scrape_posts():
-    response = requests.get(URL)
+
+    response = requests.get(
+        URL,
+        headers=HEADERS,
+        timeout=20
+    )
+
     response.raise_for_status()
 
     soup = BeautifulSoup(response.text, "html.parser")
 
     articles = soup.select("article.post-card")
 
+    print(f"Found {len(articles)} articles")
+
     posts = []
 
     for article in articles:
 
         title_element = article.select_one("h3")
-        author_element = article.select_one("a[href^='/author/']")
         date_element = article.select_one("time")
         summary_element = article.select_one("p")
 
         if not title_element:
             continue
 
-        title = title_element.get_text(strip=True)
-
-        author = (
-            author_element.get_text(strip=True)
-            if author_element
-            else "Unknown"
+        title = title_element.get_text(
+            " ",
+            strip=True
         )
 
         published_date = (
@@ -40,8 +48,23 @@ def scrape_posts():
             else None
         )
 
+        author_element = (
+            date_element.find_previous("span")
+            if date_element
+            else None
+        )
+
+        author = (
+            author_element.get_text(strip=True)
+            if author_element
+            else "Unknown"
+        )
+
         summary = (
-            summary_element.get_text(strip=True)
+            summary_element.get_text(
+                " ",
+                strip=True
+            )
             if summary_element
             else ""
         )
@@ -51,7 +74,10 @@ def scrape_posts():
         if not link_element:
             continue
 
-        url = urljoin(URL, link_element.get("href"))
+        url = urljoin(
+            URL,
+            link_element.get("href")
+        )
 
         post = {
             "title": title,
@@ -69,8 +95,6 @@ def scrape_posts():
 if __name__ == "__main__":
 
     posts = scrape_posts()
-
-    print(f"Found {len(posts)} posts\n")
 
     for post in posts:
         print(post)
