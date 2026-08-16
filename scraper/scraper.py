@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
+from cleaner import clean_text, parse_date, is_valid_post
+
 
 URL = "https://blog.python.org/"
 
@@ -20,7 +22,10 @@ def scrape_posts():
 
     response.raise_for_status()
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    soup = BeautifulSoup(
+        response.text,
+        "html.parser"
+    )
 
     articles = soup.select("article.post-card")
 
@@ -49,13 +54,15 @@ def scrape_posts():
         )
 
         author_element = (
-            date_element.find_previous("span")
+            date_element.parent.select_one("span")
             if date_element
             else None
         )
 
         author = (
-            author_element.get_text(strip=True)
+            author_element.get_text(
+                strip=True
+            )
             if author_element
             else "Unknown"
         )
@@ -80,14 +87,15 @@ def scrape_posts():
         )
 
         post = {
-            "title": title,
-            "author": author,
-            "published_date": published_date,
-            "summary": summary,
-            "url": url
+            "title": clean_text(title),
+            "author": clean_text(author),
+            "published_date": parse_date(published_date),
+            "summary": clean_text(summary),
+            "url": clean_text(url)
         }
 
-        posts.append(post)
+        if is_valid_post(post):
+            posts.append(post)
 
     return posts
 
@@ -95,6 +103,8 @@ def scrape_posts():
 if __name__ == "__main__":
 
     posts = scrape_posts()
+
+    print("\n========== BLOG POSTS ==========\n")
 
     for post in posts:
         print(post)
