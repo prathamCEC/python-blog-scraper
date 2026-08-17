@@ -2,7 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
-from cleaner import clean_text, parse_date, is_valid_post
+from cleaner import (
+    clean_text, 
+    parse_date, 
+    is_valid_post,
+    remove_duplicates
+)
 
 
 URL = "https://blog.python.org/"
@@ -96,8 +101,11 @@ def scrape_posts():
 
         if is_valid_post(post):
             posts.append(post)
-
-    return posts
+    unique_posts = remove_duplicates(posts)
+    print(
+        f"After deduplication: {len(unique_posts)} posts"
+    )
+    return unique_posts
 
 
 if __name__ == "__main__":
