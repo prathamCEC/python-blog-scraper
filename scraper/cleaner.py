@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 REQUIRED_FIELDS = [
@@ -40,3 +40,6 @@ def remove_duplicates(posts):
         unique_posts[post["url"]] = post
 
     return list(unique_posts.values())
+
+def get_scraped_at():
+    return datetime.now(timezone.utc)

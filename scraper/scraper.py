@@ -6,7 +6,8 @@ from cleaner import (
     clean_text, 
     parse_date, 
     is_valid_post,
-    remove_duplicates
+    remove_duplicates,
+    get_scraped_at
 )
 
 
@@ -96,7 +97,8 @@ def scrape_posts():
             "author": clean_text(author),
             "published_date": parse_date(published_date),
             "summary": clean_text(summary),
-            "url": clean_text(url)
+            "url": clean_text(url),
+	    "scraped_at": get_scraped_at()
         }
 
         if is_valid_post(post):
