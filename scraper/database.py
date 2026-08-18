@@ -70,3 +70,46 @@ def insert_posts(posts):
         connection.close()
 
     return inserted_count
+
+def get_posts():
+
+    connection = get_connection()
+
+    try:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT
+                    id,
+                    title,
+                    author,
+                    published_date,
+                    summary,
+                    url,
+                    scraped_at
+                FROM blog_posts
+                ORDER BY published_date DESC
+                """
+            )
+
+            rows = cursor.fetchall()
+
+            posts = []
+
+            for row in rows:
+
+                posts.append({
+                    "id": row[0],
+                    "title": row[1],
+                    "author": row[2],
+                    "published_date": row[3].isoformat(),
+                    "summary": row[4],
+                    "url": row[5],
+                    "scraped_at": row[6].isoformat()
+                })
+
+            return posts
+
+    finally:
+        connection.close()
