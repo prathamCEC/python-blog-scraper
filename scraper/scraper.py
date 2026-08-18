@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from database import insert_posts
 
 from cleaner import (
     clean_text, 
@@ -119,3 +120,9 @@ if __name__ == "__main__":
     for post in posts:
         print(post)
         print("-" * 80)
+
+    inserted_count = insert_posts(posts)
+
+    print(
+        f"\nInserted {inserted_count} new posts into PostgreSQL."
+    )
