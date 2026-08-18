@@ -113,3 +113,45 @@ def get_posts():
 
     finally:
         connection.close()
+
+
+def get_post_by_id(post_id):
+
+    connection = get_connection()
+
+    try:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT
+                    id,
+                    title,
+                    author,
+                    published_date,
+                    summary,
+                    url,
+                    scraped_at
+                FROM blog_posts
+                WHERE id = %s
+                """,
+                (post_id,)
+            )
+
+            row = cursor.fetchone()
+
+            if row is None:
+                return None
+
+            return {
+                "id": row[0],
+                "title": row[1],
+                "author": row[2],
+                "published_date": row[3].isoformat(),
+                "summary": row[4],
+                "url": row[5],
+                "scraped_at": row[6].isoformat()
+            }
+
+    finally:
+        connection.close()
