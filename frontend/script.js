@@ -71,15 +71,7 @@ function displayPosts(posts) {
                     ${escapeHtml(post.summary)}
                 </p>
 
-                <a
-                    class="read-more"
-                    href="${post.url}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Read Article →
-                </a>
-
+                <a class="read-more" href="post.html?id=${post.id}">Read Article →</a>
             </article>
         `;
 
