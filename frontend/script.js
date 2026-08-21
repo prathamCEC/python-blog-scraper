@@ -2,7 +2,8 @@ const postsContainer = document.getElementById("posts-container");
 const postCount = document.getElementById("post-count");
 const loadingMessage = document.getElementById("loading-message");
 const errorMessage = document.getElementById("error-message");
-
+const searchInput = document.getElementById("search-input");
+let allPosts = [];
 
 async function loadPosts() {
 
@@ -15,7 +16,7 @@ async function loadPosts() {
         }
 
         const posts = await response.json();
-
+	allPosts = posts;
         displayPosts(posts);
 
     } catch (error) {
@@ -90,3 +91,16 @@ function escapeHtml(value) {
 
 
 loadPosts();
+
+
+searchInput.addEventListener("input",()=>{
+    const query = searchInput.value.toLowerCase().trim();
+    const filteredPosts = allPosts.filter(post=>{
+        return (
+	    post.title.toLowerCase().includes(query) ||
+            post.author.toLowerCase().includes(query) ||
+	    post.summary.toLowerCase().includes(query)
+        );
+    });
+    displayPosts(filteredPosts);
+});

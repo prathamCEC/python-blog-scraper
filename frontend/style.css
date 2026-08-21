@@ -352,3 +352,24 @@ a {
 
     margin-bottom: 30px;
 }
+
+.search-container{
+    margin: 25px 0 30px;
+}
+#search-input{
+    width: 100%;
+    max-width: 600px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    background: white;
+}
+
+#search-input:focus {
+    border-color: var(--python-blue);
+
+    box-shadow:
+        0 0 0 3px rgba(55, 118, 171, 0.15);
+}
